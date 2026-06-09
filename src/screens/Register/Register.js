@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import {auth, db} from '../../firebase/config';
+import {auth, db} from '../../firebase/Config'
 import { useState } from 'react';
 
 

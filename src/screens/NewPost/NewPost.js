@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useState } from 'react';
-import { auth, db } from '../../firebase/config';
+import { auth, db } from '../../firebase/Config';
 
 function NuevoPost(){
     const [descripcionPost, setDescripcionPost] = useState('');

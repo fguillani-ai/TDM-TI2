@@ -1,6 +1,6 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { auth, db } from '../../firebase/config';
+import { auth, db } from '../../firebase/Config';
 
 function Profile(props){
   

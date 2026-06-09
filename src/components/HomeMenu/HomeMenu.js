@@ -1,18 +1,41 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack'; 
 import Home from '../../screens/Home/Home';
 import Profile from '../../screens/Profile/Profile';
-import NewPost from '../../screens/NewPost/NewPost'
+import NewPost from '../../screens/NewPost/NewPost';
+import Comments from '../../screens/Comments/Comments'; 
 import { FontAwesome } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator(); 
+
+function HomeStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen 
+        name="Home" 
+        component={Home} 
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen 
+        name="Comments" 
+        component={Comments} 
+        options={{ title: 'Comentarios' }} 
+      />
+    </Stack.Navigator>
+  );
+}
 
 function HomeMenu (){
   return(
     <Tab.Navigator screenOptions={{ headerShown:false }}>
       <Tab.Screen 
-        name='Home' 
-        component={Home} 
-        options={{tabBarIcon:()=> <FontAwesome name="home" size={24} color="black"/>}}
+        name='HomeTab' 
+        component={HomeStack} 
+        options={{
+          tabBarIcon:()=> <FontAwesome name="home" size={24} color="black"/>,
+          title: 'Home'
+        }}
       />
 
       <Tab.Screen 
