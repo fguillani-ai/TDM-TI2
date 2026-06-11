@@ -1,9 +1,8 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet} from 'react-native';
 import { createNativeStackNavigator} from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { useState, useEffect } from 'react'; 
-import { auth } from './src/firebase/Config';
+import { auth } from './src/firebase/config';
 import HomeMenu from './src/components/HomeMenu/HomeMenu';
 import Login from './src/screens/Login/Login';
 import Register from './src/screens/Register/Register';

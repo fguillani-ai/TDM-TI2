@@ -1,6 +1,7 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { auth, db } from '../../firebase/Config';
+import { auth, db } from '../../firebase/config';
+import { FontAwesome } from '@expo/vector-icons';
 
 function Profile(props){
   
@@ -62,7 +63,7 @@ function Profile(props){
                   <Text style={styles.postEmail}>{item.data.email}</Text>
                   <Text style={styles.postTexto}>{item.data.descripcionPost}</Text>
                   <Pressable style={styles.botonEliminar} onPress={() => eliminarPost(item.id)}>
-                    <Text style={styles.textoBoton}>Eliminar posteo</Text>
+                    <FontAwesome name="trash" size={22} color="black" />
                   </Pressable>
                 </View>
               }

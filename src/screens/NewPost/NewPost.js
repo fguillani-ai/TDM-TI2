@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useState } from 'react';
-import { auth, db } from '../../firebase/Config';
+import { auth, db } from '../../firebase/config';
 
-function NuevoPost(){
+function NuevoPost(props){
     const [descripcionPost, setDescripcionPost] = useState('');
     function onSubmit(){
         db.collection('posts').add({
@@ -10,7 +10,10 @@ function NuevoPost(){
             descripcionPost: descripcionPost,
             createdAt: Date.now()
         })
-        .then(() => {setDescripcionPost('')})
+        .then(() => {
+          setDescripcionPost('')
+          props.navigation.navigate('HomeTab');
+        })
         .catch(error => {console.log(error)})
     }
   return(

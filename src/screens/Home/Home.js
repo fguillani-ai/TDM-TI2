@@ -1,7 +1,8 @@
 import { Pressable, FlatList, StyleSheet, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
-import { db, auth } from '../../firebase/Config'; 
-import Post from '../../components/Post/Post';
+import { db, auth } from '../../firebase/config';
+import firebase from 'firebase';
+import { FontAwesome } from '@expo/vector-icons';
 
 function Home(props){ 
 
@@ -11,26 +12,33 @@ function Home(props){
 
   function likear(id, likesArray){
     const emailLogueado = auth.currentUser.email;
-        let listaLikes = []; 
-        if (likesArray) {
-      listaLikes = likesArray;
-    }
-    if(listaLikes.includes(emailLogueado)){
-      const likesActualizados = listaLikes.filter(email => email !== emailLogueado);
-      db.collection('posts').doc(id).update({
-        likes: likesActualizados
-      });
+    if(likesArray && likesArray.includes(emailLogueado)){
+      db.collection('posts')
+        .doc(id)
+        .update({
+          likes: firebase.firestore.FieldValue.arrayRemove(emailLogueado)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     } else {
-      db.collection('posts').doc(id).update({
-        likes: [...listaLikes, emailLogueado]
-      });
+      db.collection('posts')
+        .doc(id)
+        .update({
+          likes: firebase.firestore.FieldValue.arrayUnion(emailLogueado)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 
   const [posts, setPosts] = useState([]);
   
   useEffect(() => {
-    db.collection('posts').orderBy('createdAt', 'desc').onSnapshot(
+    db.collection('posts')
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(
         docs => {
             let posteos = [];
             docs.forEach(doc => {
@@ -60,14 +68,16 @@ function Home(props){
                 </Text>
 
                 <View style={styles.botones}>
-                  <Pressable style={styles.botonEliminar} onPress={() => likear(item.id, item.data.likes)}>
-                    <Text style={styles.textoBoton}>
-                      {item.data.likes && item.data.likes.includes(auth.currentUser.email) ? "Sacar Like" : "Like"}
-                    </Text>
+                  <Pressable style={styles.iconoBoton} onPress={() => likear(item.id, item.data.likes)}>
+                    <FontAwesome 
+                      name={item.data.likes && item.data.likes.includes(auth.currentUser.email) ? "heart" : "heart-o"} 
+                      size={24} 
+                      color="red" 
+                    />
                   </Pressable>
                   
-                  <Pressable style={styles.botonEliminar} onPress={() => comentar(item.id)}>
-                    <Text style={styles.textoBoton}>Comentar</Text>
+                  <Pressable style={styles.iconoBoton} onPress={() => comentar(item.id)}>
+                     <FontAwesome name="comment-o" size={24} color="black" />
                   </Pressable>
                 </View>
               </View>}
@@ -85,15 +95,6 @@ const styles = StyleSheet.create({
     fontWeight:'bold',
     fontSize:30,
     marginTop:30
-  },
-  email:{
-    fontSize:15,
-    marginBottom:25
-  },
-  subtitulo:{
-    fontWeight:'bold',
-    fontSize:24,
-    marginBottom:15
   },
   post:{
     borderWidth:1,
@@ -116,12 +117,8 @@ const styles = StyleSheet.create({
     justifyContent:'space-between',
     marginTop:10
   },
-  botonEliminar:{
-    backgroundColor:'orange',
-    padding:8,
-    borderRadius:5,
-    marginTop:10,
-    width: '45%'
+  iconoBoton:{
+    padding:8
   },
   textoBoton:{
     textAlign:'center',

@@ -1,35 +1,49 @@
 import { StyleSheet, Text, View, TextInput, Pressable, FlatList } from 'react-native';
 import { useState, useEffect } from 'react';
-import { db, auth } from '../../firebase/Config';
+import { db, auth } from '../../firebase/config';
+import firebase from 'firebase';
 
 function Comments(props) {
   const [comentarios, setComentarios] = useState([]);
   const [nuevoComentario, setNuevoComentario] = useState('');
-    const postId = props.route.params.id;
+  const postId = props.route.params.id;
 
   useEffect(() => {
-    db.collection('posts').doc(postId).onSnapshot((doc) => {
-      if (doc.exists && doc.data().comentarios) {
-        setComentarios(doc.data().comentarios);
-      }
-    });
-  }, []);
+    db.collection('posts').onSnapshot(docs => {
+      docs.forEach(doc => {
+        if(doc.id === postId){
+          if(doc.data().comentarios){
+            setComentarios(doc.data().comentarios)
+          } else {
+            setComentarios([])
+          }
+        }
+      })
+    })
+  }, [])
 
   function enviarComentario() {
     if (nuevoComentario === '') {
       return; 
     }
+
     const comentarioAEnviar = {
       email: auth.currentUser.email,
       texto: nuevoComentario,
       createdAt: Date.now() 
     };
 
-    db.collection('posts').doc(postId).update({
-      comentarios: [...comentarios, comentarioAEnviar]
-    });
-
-    setNuevoComentario('');
+    db.collection('posts')
+      .doc(postId)
+      .update({
+        comentarios: firebase.firestore.FieldValue.arrayUnion(comentarioAEnviar)
+      })
+      .then(() => {
+        setNuevoComentario('')
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   return (

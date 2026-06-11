@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useState } from "react";
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 function Comentarios(){
-    const [comentario, setComentario]= useEffect ('')
+    const [comentario, setComentario]= useState ('')
     function onSubmit(){
         console.log(comentario);
     }
